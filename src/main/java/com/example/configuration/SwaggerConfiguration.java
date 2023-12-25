@@ -23,7 +23,7 @@ public class SwaggerConfiguration {
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
                 .group("userserivsapp")
-                .packagesToScan("com.example.userserivsapp.UserServisApp.controller")
+                .packagesToScan("com.example.controller")
                 .build();
     }
 }
