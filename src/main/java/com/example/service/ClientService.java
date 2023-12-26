@@ -9,6 +9,7 @@ public interface ClientService {
     Page<ClientDto> findAll(Pageable pageable);
 
     ClientDto add(ClientCreateDto clientCreateDto);
+    ClientDto findClient(String token);
 
     ClientDto update(UpdateClientDto updateClientDto);
 

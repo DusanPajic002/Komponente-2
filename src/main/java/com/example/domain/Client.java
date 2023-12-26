@@ -8,11 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(indexes = {
-        //@Index(columnList = "unique_card_number", unique = true),
-        @Index(columnList = "email", unique = true),
-        @Index(columnList = "username", unique = true)
-})
+//@Table(indexes = {
+//        //@Index(columnList = "unique_card_number", unique = true),
+//})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

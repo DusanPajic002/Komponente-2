@@ -68,12 +68,4 @@ public class AdminController {
     public ResponseEntity<ManagerDto> updateManagerPermission(@RequestBody UpdatePermissionDto updatePermissionDto) {
         return new ResponseEntity<>(adminService.updatePermissionManager(updatePermissionDto), HttpStatus.OK);
     }
-
-    /* ce ima ovako nesto za login za admina
-    @ApiOperation(value = "Login")
-    @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
-        return new ResponseEntity<>(userService.login(tokenRequestDto), HttpStatus.OK);
-    }
-     */
 }

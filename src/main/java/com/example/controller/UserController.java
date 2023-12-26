@@ -32,6 +32,7 @@ public class UserController {
     @Operation(summary = "Login")
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> loginUser(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
+
         TokenResponseDto tokenResponseDto = clientService.login(tokenRequestDto);
         
         if(tokenResponseDto != null)
@@ -43,6 +44,5 @@ public class UserController {
 
         tokenResponseDto = adminService.login(tokenRequestDto);
         return  new ResponseEntity<>(tokenResponseDto, HttpStatus.OK);
-
     }
 }

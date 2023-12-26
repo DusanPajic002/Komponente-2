@@ -8,10 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(indexes = {
-        @Index(columnList = "email", unique = true),
-        @Index(columnList = "username", unique = true)
-})
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

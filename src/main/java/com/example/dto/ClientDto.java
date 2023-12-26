@@ -22,4 +22,17 @@ public class ClientDto {
         this.lastName = lastName;
         this.uniqueCardNumber = uniqueCardNumber;
     }
+
+    @Override
+    public String toString() {
+        return "ClientDto{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", uniqueCardNumber='" + uniqueCardNumber + '\'' +
+                ", nubmerOfTrainings=" + nubmerOfTrainings +
+                '}';
+    }
 }

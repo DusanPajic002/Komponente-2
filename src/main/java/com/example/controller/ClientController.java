@@ -31,16 +31,17 @@ public class ClientController {
         return new ResponseEntity<>(clientService.findAll(pageable), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get client by token")
+    @GetMapping("/clientInfo")
+    public ResponseEntity<ClientDto> getClient(String token){
+        return new ResponseEntity<>(clientService.findClient(token), HttpStatus.OK);
+    }
+
+
     @Operation(summary = "Register user")
     @PostMapping
     public ResponseEntity<ClientDto> saveUser(@RequestBody @Valid ClientCreateDto clientCreateDto) {
         return new ResponseEntity<>(clientService.add(clientCreateDto), HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Login")
-    @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
-        return new ResponseEntity<>(clientService.login(tokenRequestDto), HttpStatus.OK);
     }
 
     @Operation(summary = "Update client")

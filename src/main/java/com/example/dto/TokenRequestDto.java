@@ -21,4 +21,13 @@ public class TokenRequestDto {
     public String getEmail() {
         return email;
     }
+
+
+    @Override
+    public String toString() {
+        return "TokenRequestDto{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

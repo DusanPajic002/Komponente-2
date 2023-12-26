@@ -36,11 +36,5 @@ public class ManagerController {
         return new ResponseEntity<>(managerService.add(managerCreateDto), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Login")
-    @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
-        return new ResponseEntity<>(managerService.login(tokenRequestDto), HttpStatus.OK);
-    }
-
     //fali login
 }
