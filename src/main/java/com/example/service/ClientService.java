@@ -16,4 +16,6 @@ public interface ClientService {
     ClientDto updatePassword(UpdatePasswordDto updatePasswordDto);
 
     TokenResponseDto login(TokenRequestDto tokenRequestDto);
+
+    ClientDto findByUsername(String username);
 }

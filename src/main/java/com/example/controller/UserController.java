@@ -1,8 +1,7 @@
 package com.example.controller;
 
 
-import com.example.dto.TokenRequestDto;
-import com.example.dto.TokenResponseDto;
+import com.example.dto.*;
 import com.example.service.AdminService;
 import com.example.service.ClientService;
 import com.example.service.ManagerService;
@@ -10,10 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -44,5 +40,18 @@ public class UserController {
 
         tokenResponseDto = adminService.login(tokenRequestDto);
         return  new ResponseEntity<>(tokenResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get by username")
+    @GetMapping("/{username}")
+    public ResponseEntity<UserDto> getByUsername(@PathVariable("username") String username) {
+        ClientDto clientDto = clientService.findByUsername(username);
+        if(clientDto != null)
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        ManagerDto managerDto = managerService.findByUsername(username);
+        if(managerDto != null)
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

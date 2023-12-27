@@ -96,4 +96,12 @@ public class ClientServiceImpl implements ClientService {
         //Generate token
         return new TokenResponseDto(tokenService.generate(claims));
     }
+
+    @Override
+    public ClientDto findByUsername(String username) {
+        Optional<Client> client = clientRepository.findByUser_Username(username);
+        ClientDto cd = client.map(clientMapper::clientToClientDto)
+                .orElseThrow(() -> new NoSuchElementException("Client not found"));
+        return cd;
+    }
 }

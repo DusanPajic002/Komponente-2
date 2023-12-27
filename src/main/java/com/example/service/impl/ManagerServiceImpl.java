@@ -1,10 +1,8 @@
 package com.example.service.impl;
 
+import com.example.domain.Client;
 import com.example.domain.Manager;
-import com.example.dto.ManagerCreateDto;
-import com.example.dto.ManagerDto;
-import com.example.dto.TokenRequestDto;
-import com.example.dto.TokenResponseDto;
+import com.example.dto.*;
 import com.example.mapper.ManagerMapper;
 import com.example.repository.ManagerRepository;
 import com.example.secutiry.service.TokenService;
@@ -15,6 +13,9 @@ import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
@@ -61,5 +62,13 @@ public class ManagerServiceImpl implements ManagerService {
         claims.put("class", "Manager");
         //Generate token
         return new TokenResponseDto(tokenService.generate(claims));
+    }
+
+    @Override
+    public ManagerDto findByUsername(String username) {
+        Optional<Manager> manager = managerRepository.findByUser_Username(username);
+        ManagerDto md = manager.map(managerMapper::managerToManagerDto)
+                .orElseThrow(() -> new NoSuchElementException("Client not found"));
+        return md;
     }
 }
