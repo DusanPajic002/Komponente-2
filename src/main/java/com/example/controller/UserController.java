@@ -45,13 +45,13 @@ public class UserController {
     @Operation(summary = "Get by username")
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getByUsername(@PathVariable("username") String username) {
-        ClientDto clientDto = clientService.findByUsername(username);
-        if(clientDto != null)
-            return new ResponseEntity<>(HttpStatus.OK);
+        UserDto userDto = clientService.findByUsername(username);
+        if(userDto != null)
+            return new ResponseEntity<>(userDto, HttpStatus.OK);
 
-        ManagerDto managerDto = managerService.findByUsername(username);
-        if(managerDto != null)
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.OK);
+        userDto = managerService.findByUsername(username);
+        if(userDto != null)
+            return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return new ResponseEntity<>(userDto,HttpStatus.OK);
     }
 }

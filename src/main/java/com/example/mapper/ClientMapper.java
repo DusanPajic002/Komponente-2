@@ -12,6 +12,9 @@ public class ClientMapper {
        return new ClientDto(client.getId(),client.getUser().getUsername(),client.getUser().getEmail(),client.getUser().getFirstName(),
                 client.getUser().getLastName(),client.getUniqueCardNumber());
     }
+    public UserDto clintToUserDto(Client client){
+        return new UserDto(client.getUser().getUsername(),client.getUser().getEmail(),client.getUser().getFirstName(),client.getUser().getLastName());
+    }
 
     public Client clientCreateDtoToClient(ClientCreateDto clientCreateDto){
         User user = new User(clientCreateDto.getUserDto().getUsername(),clientCreateDto.getUserDto().getPassword(),clientCreateDto.getUserDto().getEmail(),

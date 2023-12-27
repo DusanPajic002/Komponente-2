@@ -65,9 +65,9 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public ManagerDto findByUsername(String username) {
+    public UserDto findByUsername(String username) {
         Optional<Manager> manager = managerRepository.findByUser_Username(username);
-        ManagerDto md = manager.map(managerMapper::managerToManagerDto)
+        UserDto md = manager.map(managerMapper::managerToUserDto)
                 .orElseThrow(() -> new NoSuchElementException("Client not found"));
         return md;
     }

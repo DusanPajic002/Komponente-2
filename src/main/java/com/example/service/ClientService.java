@@ -17,5 +17,5 @@ public interface ClientService {
 
     TokenResponseDto login(TokenRequestDto tokenRequestDto);
 
-    ClientDto findByUsername(String username);
+    UserDto findByUsername(String username);
 }

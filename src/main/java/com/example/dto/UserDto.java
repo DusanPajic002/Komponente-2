@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import com.example.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +21,5 @@ public class UserDto {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
 }

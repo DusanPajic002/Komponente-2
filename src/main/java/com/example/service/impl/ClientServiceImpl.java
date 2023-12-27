@@ -98,9 +98,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDto findByUsername(String username) {
+    public UserDto findByUsername(String username) {
         Optional<Client> client = clientRepository.findByUser_Username(username);
-        ClientDto cd = client.map(clientMapper::clientToClientDto)
+        UserDto cd = client.map(clientMapper::clintToUserDto)
                 .orElseThrow(() -> new NoSuchElementException("Client not found"));
         return cd;
     }
