@@ -9,11 +9,11 @@ public class UpdatePasswordDto {
 
     private String oldPassword;
     private String password;
-    private String email;
+    private String token;
 
-    public UpdatePasswordDto(String oldPassword, String password, String email) {
+    public UpdatePasswordDto(String oldPassword, String password, String token) {
         this.oldPassword = oldPassword;
         this.password = password;
-        this.email = email;
+        this.token = token;
     }
 }

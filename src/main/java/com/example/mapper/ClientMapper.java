@@ -36,4 +36,9 @@ public class ClientMapper {
         client.getUser().setPassword(updatePasswordDto.getPassword());
         return client;
     }
+
+    public Client client(Client client){
+        return client;
+    }
+
 }

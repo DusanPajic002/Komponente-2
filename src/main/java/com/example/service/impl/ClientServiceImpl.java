@@ -28,16 +28,19 @@ public class ClientServiceImpl implements ClientService {
     private ClientMapper clientMapper;
     @Autowired
     private JmsTemplate jmsTemplate;
-    private String registrationMessage;
+    private String registrationMessage;;
+    private String changedPassword;
     private MessageHelper messageHelper;
 
     public ClientServiceImpl(TokenService tokenService, ClientRepository clientRepository, ClientMapper clientMapper, JmsTemplate jmsTemplate,
-                             @Value("${destination.registrationMessage}") String registrationMessage, MessageHelper messageHelper) {
+                             @Value("${destination.registrationMessage}") String registrationMessage, @Value("${destination.changedPasswordMessage}") String changedPassword
+                                    ,MessageHelper messageHelper) {
         this.tokenService = tokenService;
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
         this.jmsTemplate = jmsTemplate;
         this.registrationMessage = registrationMessage;
+        this.changedPassword = changedPassword;
         this.messageHelper = messageHelper;
     }
 
@@ -53,7 +56,6 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
         NotificationCreateDto nDto = new NotificationCreateDto(clientCreateDto.getUserDto().getFirstName(),clientCreateDto.getUserDto().getLastName(),
                 clientCreateDto.getUserDto().getEmail(),clientCreateDto.getUserDto().getUsername());
-        System.out.println(nDto);
         jmsTemplate.convertAndSend(registrationMessage, messageHelper.createTextMessage(nDto));
         return clientMapper.clientToClientDto(client);
     }
@@ -80,20 +82,24 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDto updatePassword(UpdatePasswordDto updatePasswordDto) {
-        Client client = clientRepository.findByUser_EmailAndUser_Password(updatePasswordDto.getEmail(), updatePasswordDto.getOldPassword()).get();
-        if(client == null){
+        Claims claims = tokenService.parseToken(updatePasswordDto.getToken());
+        Optional<Client> cd = clientRepository.findByuniqueCardNumber(claims.get("uniqueCardNumber", String.class));
+        Client client = cd.map(clientMapper::client)
+                .orElseThrow(() -> new NoSuchElementException("Client not found"));
+        if(client == null)
             return null;
-        }
-        System.out.println(client);
         client =  clientMapper.updatePassword(client,updatePasswordDto);
         client = clientRepository.save(client);
+
+        NotificationCreateDto nDto = new NotificationCreateDto(client.getUser().getFirstName(),client.getUser().getLastName(),
+                client.getUser().getEmail(),client.getUser().getUsername());
+        jmsTemplate.convertAndSend(changedPassword, messageHelper.createTextMessage(nDto));
         return clientMapper.clientToClientDto(client);
     }
 
     @Override
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
-        //Try to find active user for specified credentials
-        System.out.println(tokenRequestDto);
+        //Try to find active user for specified credentials;
         Client user = null;
         try {
             user = clientRepository
@@ -109,7 +115,6 @@ public class ClientServiceImpl implements ClientService {
         claims.put("uniqueCardNumber", user.getUniqueCardNumber());
         claims.put("username", user.getUser().getUsername());
         claims.put("email", user.getUser().getEmail());
-        //Generate token
         return new TokenResponseDto(tokenService.generate(claims));
     }
 

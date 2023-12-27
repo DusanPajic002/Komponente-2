@@ -37,7 +37,6 @@ public class ClientController {
         return new ResponseEntity<>(clientService.findClient(token), HttpStatus.OK);
     }
 
-
     @Operation(summary = "Register user")
     @PostMapping
     public ResponseEntity<ClientDto> saveUser(@RequestBody @Valid ClientCreateDto clientCreateDto) {
