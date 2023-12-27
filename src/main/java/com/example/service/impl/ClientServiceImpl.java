@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.domain.Client;
 import com.example.dto.*;
+import com.example.listener.MessageHelper;
 import com.example.mapper.ClientMapper;
 import com.example.repository.ClientRepository;
 import com.example.secutiry.service.TokenService;
@@ -9,8 +10,11 @@ import com.example.service.ClientService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -22,11 +26,19 @@ public class ClientServiceImpl implements ClientService {
     private TokenService tokenService;
     private ClientRepository clientRepository;
     private ClientMapper clientMapper;
+    @Autowired
+    private JmsTemplate jmsTemplate;
+    private String registrationMessage;
+    private MessageHelper messageHelper;
 
-    public ClientServiceImpl(TokenService tokenService, ClientRepository clientRepository, ClientMapper clientMapper) {
+    public ClientServiceImpl(TokenService tokenService, ClientRepository clientRepository, ClientMapper clientMapper, JmsTemplate jmsTemplate,
+                             @Value("${destination.registrationMessage}") String registrationMessage, MessageHelper messageHelper) {
         this.tokenService = tokenService;
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
+        this.jmsTemplate = jmsTemplate;
+        this.registrationMessage = registrationMessage;
+        this.messageHelper = messageHelper;
     }
 
     @Override
@@ -39,6 +51,10 @@ public class ClientServiceImpl implements ClientService {
     public ClientDto add(ClientCreateDto clientCreateDto) {
         Client client = clientMapper.clientCreateDtoToClient(clientCreateDto);
         clientRepository.save(client);
+        NotificationCreateDto nDto = new NotificationCreateDto(clientCreateDto.getUserDto().getFirstName(),clientCreateDto.getUserDto().getLastName(),
+                clientCreateDto.getUserDto().getEmail(),clientCreateDto.getUserDto().getUsername());
+        System.out.println(nDto);
+        jmsTemplate.convertAndSend(registrationMessage, messageHelper.createTextMessage(nDto));
         return clientMapper.clientToClientDto(client);
     }
 
