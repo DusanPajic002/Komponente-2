@@ -3,15 +3,20 @@ package com.example.service.impl;
 import com.example.domain.Client;
 import com.example.domain.Manager;
 import com.example.dto.*;
+import com.example.listener.MessageHelper;
 import com.example.mapper.ManagerMapper;
+import com.example.repository.ClientRepository;
 import com.example.repository.ManagerRepository;
 import com.example.secutiry.service.TokenService;
 import com.example.service.ManagerService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -24,10 +29,19 @@ public class ManagerServiceImpl implements ManagerService {
     private ManagerRepository managerRepository;
     private ManagerMapper managerMapper;
 
-    public ManagerServiceImpl(TokenService tokenService, ManagerRepository managerRepository, ManagerMapper managerMapper) {
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
+    private String registrationMessage;
+    private MessageHelper messageHelper;
+
+    public ManagerServiceImpl(TokenService tokenService, ManagerRepository managerRepository, ManagerMapper managerMapper, ClientRepository clientRepository,
+                              @Value("${destination.registrationMessage}") String registrationMessage, MessageHelper messageHelper) {
         this.tokenService = tokenService;
         this.managerRepository = managerRepository;
         this.managerMapper = managerMapper;
+        this.clientRepository = clientRepository;
     }
 
     @Override
@@ -38,8 +52,15 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public ManagerDto add(ManagerCreateDto managerCreateDto) {
+        Client clientUserName = clientRepository.findByUser_Username(managerCreateDto.getUserDto().getUsername()).orElse(null);;
+        Client clientEmail = clientRepository.findByUser_Email(managerCreateDto.getUserDto().getUsername()).orElse(null);;
+        if(clientUserName != null || clientEmail != null)
+            return null;
         Manager manager = managerMapper.managerCreateDtoToManager(managerCreateDto);
         managerRepository.save(manager);
+        NotificationCreateDto nDto = new NotificationCreateDto(managerCreateDto.getUserDto().getFirstName(),managerCreateDto.getUserDto().getLastName(),
+                managerCreateDto.getUserDto().getEmail(),managerCreateDto.getUserDto().getUsername());
+        jmsTemplate.convertAndSend(registrationMessage, messageHelper.createTextMessage(nDto));
         return managerMapper.managerToManagerDto(manager);
     }
 
@@ -68,7 +89,9 @@ public class ManagerServiceImpl implements ManagerService {
     public ManagerDto findByUsername(String username) {
         Optional<Manager> manager = managerRepository.findByUser_Username(username);
         ManagerDto md = manager.map(managerMapper::managerToManagerDto)
-                .orElseThrow(() -> new NoSuchElementException("Client not found"));
+                .orElseThrow(() -> new NoSuchElementException("Manager not found"));
         return md;
     }
+
+
 }

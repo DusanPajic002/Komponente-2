@@ -15,4 +15,5 @@ public interface ManagerService {
     TokenResponseDto login(TokenRequestDto tokenRequestDto);
 
     ManagerDto findByUsername(String username);
+
 }

@@ -1,10 +1,12 @@
 package com.example.service.impl;
 
 import com.example.domain.Client;
+import com.example.domain.Manager;
 import com.example.dto.*;
 import com.example.listener.MessageHelper;
 import com.example.mapper.ClientMapper;
 import com.example.repository.ClientRepository;
+import com.example.repository.ManagerRepository;
 import com.example.secutiry.service.TokenService;
 import com.example.service.ClientService;
 import io.jsonwebtoken.Claims;
@@ -25,6 +27,8 @@ public class ClientServiceImpl implements ClientService {
 
     private TokenService tokenService;
     private ClientRepository clientRepository;
+
+    private ManagerRepository managerRepository;
     private ClientMapper clientMapper;
     @Autowired
     private JmsTemplate jmsTemplate;
@@ -34,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
 
     public ClientServiceImpl(TokenService tokenService, ClientRepository clientRepository, ClientMapper clientMapper, JmsTemplate jmsTemplate,
                              @Value("${destination.registrationMessage}") String registrationMessage, @Value("${destination.changedPasswordMessage}") String changedPassword
-                                    ,MessageHelper messageHelper) {
+                                    ,MessageHelper messageHelper,  ManagerRepository managerRepository ) {
         this.tokenService = tokenService;
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
@@ -42,6 +46,7 @@ public class ClientServiceImpl implements ClientService {
         this.registrationMessage = registrationMessage;
         this.changedPassword = changedPassword;
         this.messageHelper = messageHelper;
+        this.managerRepository = managerRepository;
     }
 
     @Override
@@ -52,6 +57,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDto add(ClientCreateDto clientCreateDto) {
+        Manager managerUserName = managerRepository.findByUser_Username(clientCreateDto.getUserDto().getUsername()).orElse(null);;
+        Manager managerEmail = managerRepository.findByUser_Email(clientCreateDto.getUserDto().getUsername()).orElse(null);;
+
+
+        if(managerUserName != null || managerEmail != null)
+            return null;
+
         Client client = clientMapper.clientCreateDtoToClient(clientCreateDto);
         clientRepository.save(client);
         NotificationCreateDto nDto = new NotificationCreateDto(clientCreateDto.getUserDto().getFirstName(),clientCreateDto.getUserDto().getLastName(),
@@ -99,19 +111,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
-        //Try to find active user for specified credentials;
         Client user = null;
         user = clientRepository
                 .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
                 .orElse(null);
-//        try {
-//            user = clientRepository
-//                    .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
-//                    .orElse(null);
-//        } catch (NotFoundException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
+
         if(user == null){
             System.out.println("Client not found");
             return null;
@@ -121,6 +125,8 @@ public class ClientServiceImpl implements ClientService {
         claims.put("uniqueCardNumber", user.getUniqueCardNumber());
         claims.put("username", user.getUser().getUsername());
         claims.put("email", user.getUser().getEmail());
+        claims.put("firstName", user.getUser().getFirstName());
+        claims.put("lastName", user.getUser().getLastName());
         return new TokenResponseDto(tokenService.generate(claims));
     }
 
@@ -131,4 +137,25 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new NoSuchElementException("Client not found"));
         return cd;
     }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+//        try {
+//            user = clientRepository
+//                    .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
+//                    .orElse(null);
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
