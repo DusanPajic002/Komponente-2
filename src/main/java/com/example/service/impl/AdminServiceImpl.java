@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.domain.Admin;
 import com.example.domain.Client;
 import com.example.domain.Manager;
 import com.example.dto.*;
@@ -10,6 +11,9 @@ import com.example.repository.ClientRepository;
 import com.example.repository.ManagerRepository;
 import com.example.secutiry.service.TokenService;
 import com.example.service.AdminService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -70,6 +74,21 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
-        return null;
+        //Try to find active user for specified credentials
+        Admin user = null;
+        user = adminRepository
+                .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
+                .orElse(null);
+        if(user == null){
+            System.out.println("Admin not found");
+            return null;
+        }
+        //Create token payload
+        Claims claims = Jwts.claims();
+        claims.put("id", user.getId());
+        claims.put("username", user.getUser().getUsername());
+        claims.put("email", user.getUser().getEmail());
+        //Generate token
+        return new TokenResponseDto(tokenService.generate(claims));
     }
 }

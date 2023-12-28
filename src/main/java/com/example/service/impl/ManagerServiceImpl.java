@@ -47,19 +47,19 @@ public class ManagerServiceImpl implements ManagerService {
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
         //Try to find active user for specified credentials
         Manager user = null;
-        try {
-            user = managerRepository
-                    .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
-                    .orElseThrow(() -> new NotFoundException(String
-                            .format("User with username: %s and password: %s not found.", tokenRequestDto.getEmail(),
-                                    tokenRequestDto.getPassword())));
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        user = managerRepository
+                .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
+                .orElse(null);
+        if(user == null){
+            System.out.println("Manager not found");
+            return null;
         }
         //Create token payload
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
-        claims.put("class", "Manager");
+        claims.put("hallName", user.getHallName());
+        claims.put("username", user.getUser().getUsername());
+        claims.put("email", user.getUser().getEmail());
         //Generate token
         return new TokenResponseDto(tokenService.generate(claims));
     }

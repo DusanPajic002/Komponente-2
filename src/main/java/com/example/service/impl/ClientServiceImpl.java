@@ -101,14 +101,20 @@ public class ClientServiceImpl implements ClientService {
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
         //Try to find active user for specified credentials;
         Client user = null;
-        try {
-            user = clientRepository
-                    .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
-                    .orElseThrow(() -> new NotFoundException(String
-                    .format("User with username: %s and password: %s not found.", tokenRequestDto.getEmail(),
-                            tokenRequestDto.getPassword())));
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        user = clientRepository
+                .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
+                .orElse(null);
+//        try {
+//            user = clientRepository
+//                    .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
+//                    .orElse(null);
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+        if(user == null){
+            System.out.println("Client not found");
+            return null;
         }
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
