@@ -43,16 +43,14 @@ public class AdminController {
     @Operation(summary = "Get all clients")
     @GetMapping("/clients")
     //@CheckSecurity(classTypes = {"Admin"})
-    public ResponseEntity<Page<ClientDto>> getAllClients(//@RequestHeader("Authorization") String authorization,
-                                                         Pageable pageable) {
+    public ResponseEntity<Page<ClientDto>> getAllClients(Pageable pageable) {
         return new ResponseEntity<>(adminService.findAllClients(pageable), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get all clients")
+    @Operation(summary = "Get all managers")
     @GetMapping("/managers")
     //@CheckSecurity(classTypes = {"Admin"})
-    public ResponseEntity<Page<ManagerDto>> getAllManagers(//@RequestHeader("Authorization") String authorization,
-                                                           Pageable pageable) {
+    public ResponseEntity<Page<ManagerDto>> getAllManagers(Pageable pageable) {
 
         return new ResponseEntity<>(adminService.findAllManageres(pageable), HttpStatus.OK);
     }

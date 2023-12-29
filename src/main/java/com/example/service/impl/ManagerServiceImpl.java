@@ -68,7 +68,6 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public TokenResponseDto login(TokenRequestDto tokenRequestDto) {
-        //Try to find active user for specified credentials
         Manager user = null;
         user = managerRepository
                 .findByUser_EmailAndUser_Password(tokenRequestDto.getEmail(), tokenRequestDto.getPassword())
@@ -77,7 +76,6 @@ public class ManagerServiceImpl implements ManagerService {
             System.out.println("Manager not found");
             return null;
         }
-        //Create token payload
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
         claims.put("hallName", user.getHallName());
