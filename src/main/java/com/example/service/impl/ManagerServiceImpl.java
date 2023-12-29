@@ -42,6 +42,8 @@ public class ManagerServiceImpl implements ManagerService {
         this.managerRepository = managerRepository;
         this.managerMapper = managerMapper;
         this.clientRepository = clientRepository;
+        this.registrationMessage = registrationMessage;
+        this.messageHelper = messageHelper;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public ManagerDto add(ManagerCreateDto managerCreateDto) {
         Client clientUserName = clientRepository.findByUser_Username(managerCreateDto.getUserDto().getUsername()).orElse(null);;
-        Client clientEmail = clientRepository.findByUser_Email(managerCreateDto.getUserDto().getUsername()).orElse(null);;
+        Client clientEmail = clientRepository.findByUser_Email(managerCreateDto.getUserDto().getEmail()).orElse(null);;
         if(clientUserName != null || clientEmail != null)
             return null;
         Manager manager = managerMapper.managerCreateDtoToManager(managerCreateDto);

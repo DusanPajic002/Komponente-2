@@ -58,9 +58,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDto add(ClientCreateDto clientCreateDto) {
         Manager managerUserName = managerRepository.findByUser_Username(clientCreateDto.getUserDto().getUsername()).orElse(null);;
-        Manager managerEmail = managerRepository.findByUser_Email(clientCreateDto.getUserDto().getUsername()).orElse(null);;
-
-
+        Manager managerEmail = managerRepository.findByUser_Email(clientCreateDto.getUserDto().getEmail()).orElse(null);;
         if(managerUserName != null || managerEmail != null)
             return null;
 
