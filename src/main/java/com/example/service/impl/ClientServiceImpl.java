@@ -136,6 +136,18 @@ public class ClientServiceImpl implements ClientService {
         return cd;
     }
 
+    @Override
+    public int updateNumberOfTrainings(Long id) {
+        Optional<Client> client = clientRepository.findById(id);
+        if(client.isPresent()){
+            Client c = client.get();
+            c.setNubmerOfTrainings(c.getNubmerOfTrainings() + 1);
+            clientRepository.save(c);
+            return c.getNubmerOfTrainings();
+        }
+        return -1;
+    }
+
 
 }
 

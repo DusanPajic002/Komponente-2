@@ -54,5 +54,13 @@ public class ClientController {
     public ResponseEntity<ClientDto> updatePassword(@RequestBody UpdatePasswordDto updatePasswordDto) {
         return new ResponseEntity<>(clientService.updatePassword(updatePasswordDto), HttpStatus.OK);
     }
+
+
+    @Operation(summary = "Update clients number of trainings")
+    @PutMapping("/numberOfTrainings")
+    public ResponseEntity<Integer> updateNumberOfTrainings(@RequestBody Long id) {
+        System.out.println(id);
+        return new ResponseEntity<>(clientService.updateNumberOfTrainings(id), HttpStatus.OK);
+    }
     //fali login
 }
