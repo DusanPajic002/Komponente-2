@@ -19,6 +19,6 @@ public interface ClientService {
 
     ClientDto findByUsername(String username);
 
-    int updateNumberOfTrainings(Long id);
+    int updateNumberOfTrainings(Long id, int i);
 
 }

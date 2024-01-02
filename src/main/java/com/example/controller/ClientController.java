@@ -59,8 +59,12 @@ public class ClientController {
     @Operation(summary = "Update clients number of trainings")
     @PutMapping("/numberOfTrainings")
     public ResponseEntity<Integer> updateNumberOfTrainings(@RequestBody Long id) {
-        System.out.println(id);
-        return new ResponseEntity<>(clientService.updateNumberOfTrainings(id), HttpStatus.OK);
+        return new ResponseEntity<>(clientService.updateNumberOfTrainings(id, +1), HttpStatus.OK);
     }
-    //fali login
+    @Operation(summary = "Update clients number of trainings")
+    @PutMapping("/canceledAppointment")
+    public ResponseEntity<Integer> canceledAppointment(@RequestBody Long id) {
+        System.out.println(id);
+        return new ResponseEntity<>(clientService.updateNumberOfTrainings(id, -1), HttpStatus.OK);
+    }
 }

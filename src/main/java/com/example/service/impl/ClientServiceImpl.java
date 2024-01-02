@@ -118,6 +118,10 @@ public class ClientServiceImpl implements ClientService {
             System.out.println("Client not found");
             return null;
         }
+        if(user.getUser().isPermission() == false){
+            System.out.println("No permission");
+            return null;
+        }
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
         claims.put("uniqueCardNumber", user.getUniqueCardNumber());
@@ -137,11 +141,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public int updateNumberOfTrainings(Long id) {
+    public int updateNumberOfTrainings(Long id, int i) {
         Optional<Client> client = clientRepository.findById(id);
         if(client.isPresent()){
             Client c = client.get();
-            c.setNubmerOfTrainings(c.getNubmerOfTrainings() + 1);
+            c.setNubmerOfTrainings(c.getNubmerOfTrainings() + i);
             clientRepository.save(c);
             return c.getNubmerOfTrainings();
         }

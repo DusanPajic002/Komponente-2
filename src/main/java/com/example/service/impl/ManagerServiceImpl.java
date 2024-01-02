@@ -76,6 +76,10 @@ public class ManagerServiceImpl implements ManagerService {
             System.out.println("Manager not found");
             return null;
         }
+        if(user.getUser().isPermission() == false){
+            System.out.println("No permission");
+            return null;
+        }
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
         claims.put("hallName", user.getHallName());
