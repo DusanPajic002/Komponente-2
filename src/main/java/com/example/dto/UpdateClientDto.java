@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 public class UpdateClientDto {
 
 
-    private String uniqueCardNumber;
+    private Long uniqueCardNumber;
     private UserDto userDto;
 
 

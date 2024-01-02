@@ -11,10 +11,10 @@ public class ClientDto {
     private String email;
     private String firstName;
     private String lastName;
-    private String uniqueCardNumber;
+    private Long uniqueCardNumber;
     private int nubmerOfTrainings;
 
-    public ClientDto(Long id, String username, String email, String firstName, String lastName, String uniqueCardNumber) {
+    public ClientDto(Long id, String username, String email, String firstName, String lastName, Long uniqueCardNumber) {
         this.id = id;
         this.username = username;
         this.email = email;

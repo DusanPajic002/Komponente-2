@@ -16,8 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -28,21 +32,21 @@ public class ManagerServiceImpl implements ManagerService {
     private TokenService tokenService;
     private ManagerRepository managerRepository;
     private ManagerMapper managerMapper;
-
+    private RestTemplate resevationServiceRestTemplate;
     private ClientRepository clientRepository;
-
     @Autowired
     private JmsTemplate jmsTemplate;
     private String registrationMessage;
     private MessageHelper messageHelper;
 
     public ManagerServiceImpl(TokenService tokenService, ManagerRepository managerRepository, ManagerMapper managerMapper, ClientRepository clientRepository,
-                              @Value("${destination.registrationMessage}") String registrationMessage, MessageHelper messageHelper) {
+                              @Value("${destination.registrationMessage}") String registrationMessage, MessageHelper messageHelper, RestTemplate resevationServiceRestTemplate) {
         this.tokenService = tokenService;
         this.managerRepository = managerRepository;
         this.managerMapper = managerMapper;
         this.clientRepository = clientRepository;
         this.registrationMessage = registrationMessage;
+        this.resevationServiceRestTemplate = resevationServiceRestTemplate;
         this.messageHelper = messageHelper;
     }
 
@@ -60,6 +64,14 @@ public class ManagerServiceImpl implements ManagerService {
             return null;
         Manager manager = managerMapper.managerCreateDtoToManager(managerCreateDto);
         managerRepository.save(manager);
+
+        HallDto hallDto = new HallDto(manager.getHallName(), manager.getId());
+        System.out.println(hallDto);
+        ResponseEntity<Integer> responseEntity = resevationServiceRestTemplate.exchange("/hall/setHallManager",
+                HttpMethod.PUT, new HttpEntity<>(hallDto), Integer.class);
+        if(responseEntity.getBody() == 0)
+            throw new NoSuchElementException("Hall not found");
+
         NotificationCreateDto nDto = new NotificationCreateDto(managerCreateDto.getUserDto().getFirstName(),managerCreateDto.getUserDto().getLastName(),
                 managerCreateDto.getUserDto().getEmail(),managerCreateDto.getUserDto().getUsername());
         jmsTemplate.convertAndSend(registrationMessage, messageHelper.createTextMessage(nDto));
@@ -85,6 +97,7 @@ public class ManagerServiceImpl implements ManagerService {
         claims.put("hallName", user.getHallName());
         claims.put("username", user.getUser().getUsername());
         claims.put("email", user.getUser().getEmail());
+        claims.put("rola", user.getRola());
         //Generate token
         return new TokenResponseDto(tokenService.generate(claims));
     }

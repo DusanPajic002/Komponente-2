@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDto findClient(String token) {
         Claims claims = tokenService.parseToken(token);
-        Optional<Client> client = clientRepository.findByuniqueCardNumber(claims.get("uniqueCardNumber", String.class));
+        Optional<Client> client = clientRepository.findByuniqueCardNumber(claims.get("uniqueCardNumber", Long.class));
         ClientDto cd = client.map(clientMapper::clientToClientDto)
                 .orElseThrow(() -> new NoSuchElementException("Client not found"));
         return cd;
@@ -93,7 +94,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDto updatePassword(UpdatePasswordDto updatePasswordDto) {
         Claims claims = tokenService.parseToken(updatePasswordDto.getToken());
-        Optional<Client> cd = clientRepository.findByuniqueCardNumber(claims.get("uniqueCardNumber", String.class));
+        Optional<Client> cd = clientRepository.findByuniqueCardNumber(claims.get("uniqueCardNumber", Long.class));
         Client client = cd.map(clientMapper::client)
                 .orElseThrow(() -> new NoSuchElementException("Client not found"));
         if(client == null)
@@ -129,6 +130,7 @@ public class ClientServiceImpl implements ClientService {
         claims.put("email", user.getUser().getEmail());
         claims.put("firstName", user.getUser().getFirstName());
         claims.put("lastName", user.getUser().getLastName());
+        claims.put("rola", user.getRola());
         return new TokenResponseDto(tokenService.generate(claims));
     }
 

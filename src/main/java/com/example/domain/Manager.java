@@ -14,6 +14,7 @@ public class Manager {
     private Long id;
     private String hallName;
     private String startDate;
+    private final String rola = "Manager";
 
     @Embedded
     private User user;

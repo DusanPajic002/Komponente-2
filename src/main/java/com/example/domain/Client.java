@@ -8,28 +8,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-//@Table(indexes = {
-//        //@Index(columnList = "unique_card_number", unique = true),
-//})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String uniqueCardNumber;
+    private Long uniqueCardNumber;
+    private static long i = 100;
     private int nubmerOfTrainings;
-
+    private final String rola = "Client";
     @Embedded
     private User user;
 
-    public Client(Long id, String uniqueCardNumber, int nubmerOfTrainings, User user) {
-        this.id = id;
-        this.uniqueCardNumber = uniqueCardNumber;
-        this.nubmerOfTrainings = nubmerOfTrainings;
-        this.user = user;
+    @PrePersist
+    protected void onPrePersist() {
+        this.uniqueCardNumber = i;
+       i++;
     }
 
-    public Client(String uniqueCardNumber, int nubmerOfTrainings, User user) {
-        this.uniqueCardNumber = uniqueCardNumber;
+    public Client(Long id, int nubmerOfTrainings, User user) {
+        this.id = id;
         this.nubmerOfTrainings = nubmerOfTrainings;
         this.user = user;
     }

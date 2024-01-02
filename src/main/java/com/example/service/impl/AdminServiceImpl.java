@@ -88,6 +88,7 @@ public class AdminServiceImpl implements AdminService {
         claims.put("id", user.getId());
         claims.put("username", user.getUser().getUsername());
         claims.put("email", user.getUser().getEmail());
+        claims.put("rola", user.getRola());
         //Generate token
         return new TokenResponseDto(tokenService.generate(claims));
     }
