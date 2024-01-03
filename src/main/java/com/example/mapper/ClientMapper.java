@@ -16,7 +16,7 @@ public class ClientMapper {
     public Client clientCreateDtoToClient(ClientCreateDto clientCreateDto){
         User user = new User(clientCreateDto.getUserDto().getUsername(),clientCreateDto.getUserDto().getPassword(),clientCreateDto.getUserDto().getEmail(),
                 clientCreateDto.getUserDto().getDateOfBirth(),clientCreateDto.getUserDto().getFirstName(),clientCreateDto.getUserDto().getLastName(),clientCreateDto.getUserDto().isPermission());
-        return new Client(clientCreateDto.getId(),clientCreateDto.getNubmerOfTrainings(),user);
+        return new Client(clientCreateDto.getNubmerOfTrainings(),user);
     }
 
     public Client updatePermissionDtoToClient(Client client, UpdatePermissionDto updatePermissionDto){

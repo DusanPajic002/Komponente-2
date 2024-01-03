@@ -18,7 +18,7 @@ public class ManagerMapper {
     public Manager managerCreateDtoToManager(ManagerCreateDto managerCreateDto){
         User user = new User(managerCreateDto.getUserDto().getUsername(),managerCreateDto.getUserDto().getPassword(),managerCreateDto.getUserDto().getEmail(),
                 managerCreateDto.getUserDto().getDateOfBirth(),managerCreateDto.getUserDto().getFirstName(),managerCreateDto.getUserDto().getLastName(),managerCreateDto.getUserDto().isPermission());
-        return new Manager(managerCreateDto.getId(),managerCreateDto.getHallName(),managerCreateDto.getStartDate(),user);
+        return new Manager(managerCreateDto.getHallName(),managerCreateDto.getStartDate(),user);
     }
 
     public Manager updatePermissionDtoToManager(Manager manager, UpdatePermissionDto updatePermissionDto){

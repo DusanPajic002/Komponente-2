@@ -64,11 +64,15 @@ public class ManagerServiceImpl implements ManagerService {
             return null;
         Manager manager = managerMapper.managerCreateDtoToManager(managerCreateDto);
         managerRepository.save(manager);
+        if(managerRepository.findById(manager.getId()).orElse(null) == null)
+            throw new NoSuchElementException("Manager not found");
+
 
         HallDto hallDto = new HallDto(manager.getHallName(), manager.getId());
         System.out.println(hallDto);
         ResponseEntity<Integer> responseEntity = resevationServiceRestTemplate.exchange("/hall/setHallManager",
                 HttpMethod.PUT, new HttpEntity<>(hallDto), Integer.class);
+        System.out.println(responseEntity);
         if(responseEntity.getBody() == 0)
             throw new NoSuchElementException("Hall not found");
 
@@ -108,6 +112,17 @@ public class ManagerServiceImpl implements ManagerService {
         ManagerDto md = manager.map(managerMapper::managerToManagerDto)
                 .orElseThrow(() -> new NoSuchElementException("Manager not found"));
         return md;
+    }
+
+    @Override
+    public Integer updateHallName(HallDto hallDto) {
+        Manager manager = managerRepository.findById(hallDto.getManagerID()).orElse(null);
+        if(manager != null){
+            manager.setHallName(hallDto.getName());
+            managerRepository.save(manager);
+            return 1;
+        }
+        return 0;
     }
 
 

@@ -25,8 +25,7 @@ public class Client {
        i++;
     }
 
-    public Client(Long id, int nubmerOfTrainings, User user) {
-        this.id = id;
+    public Client( int nubmerOfTrainings, User user) {
         this.nubmerOfTrainings = nubmerOfTrainings;
         this.user = user;
     }

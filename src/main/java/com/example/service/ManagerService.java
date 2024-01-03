@@ -1,9 +1,6 @@
 package com.example.service;
 
-import com.example.dto.ManagerCreateDto;
-import com.example.dto.ManagerDto;
-import com.example.dto.TokenRequestDto;
-import com.example.dto.TokenResponseDto;
+import com.example.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,4 +13,5 @@ public interface ManagerService {
 
     ManagerDto findByUsername(String username);
 
+    Integer updateHallName(HallDto hallDto);
 }

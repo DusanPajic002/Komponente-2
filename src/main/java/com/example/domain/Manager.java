@@ -19,8 +19,7 @@ public class Manager {
     @Embedded
     private User user;
 
-    public Manager(Long id, String hallName, String startDate, User user) {
-        this.id = id;
+    public Manager( String hallName, String startDate, User user) {
         this.hallName = hallName;
         this.startDate = startDate;
         this.user = user;

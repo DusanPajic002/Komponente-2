@@ -1,9 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.ManagerCreateDto;
-import com.example.dto.ManagerDto;
-import com.example.dto.TokenRequestDto;
-import com.example.dto.TokenResponseDto;
+import com.example.dto.*;
 import com.example.service.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -34,6 +31,12 @@ public class ManagerController {
     @PostMapping
     public ResponseEntity<ManagerDto> saveUser(@RequestBody @Valid ManagerCreateDto managerCreateDto) {
         return new ResponseEntity<>(managerService.add(managerCreateDto), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Register user")
+    @PutMapping("/updateHallName")
+    public ResponseEntity<Integer> updateHallName(@RequestBody HallDto hallDto) {
+        return new ResponseEntity<>(managerService.updateHallName(hallDto), HttpStatus.CREATED);
     }
 
     //fali login
