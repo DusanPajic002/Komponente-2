@@ -143,6 +143,14 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ClientDto findById(Long id) {
+        Optional<Client> client = clientRepository.findById(id);
+        ClientDto cd = client.map(clientMapper::clientToClientDto)
+                .orElseThrow(() -> new NoSuchElementException("Client not found"));
+        return cd;
+    }
+
+    @Override
     public int updateNumberOfTrainings(Long id, int i) {
         Optional<Client> client = clientRepository.findById(id);
         if(client.isPresent()){

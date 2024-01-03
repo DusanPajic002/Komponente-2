@@ -67,4 +67,10 @@ public class ClientController {
         System.out.println(id);
         return new ResponseEntity<>(clientService.updateNumberOfTrainings(id, -1), HttpStatus.OK);
     }
+
+    @Operation(summary = "Get client by token")
+    @GetMapping("/clientForNotification/{id}")
+    public ResponseEntity<ClientDto> getClientForNotification(@PathVariable Long id){
+        return new ResponseEntity<>(clientService.findById(id), HttpStatus.OK);
+    }
 }
