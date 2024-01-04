@@ -28,14 +28,14 @@ public class AdminController {
     }
 
     @Operation(summary = "Get all clients")
-    @PostMapping("/clients")
+    @GetMapping("/clients")
     @CheckSecurity(role = {"Admin"})
     public ResponseEntity<Page<ClientDto>> getAllClients(@RequestHeader("Authorization") String authorization, Pageable pageable) {
         return new ResponseEntity<>(adminService.findAllClients(pageable), HttpStatus.OK);
     }
 
     @Operation(summary = "Get all managers")
-    @PostMapping("/managers")
+    @GetMapping("/managers")
     @CheckSecurity(role = {"Admin"})
     public ResponseEntity<Page<ManagerDto>> getAllManagers(@RequestHeader("Authorization") String authorization, Pageable pageable) {
         return new ResponseEntity<>(adminService.findAllManageres(pageable), HttpStatus.OK);
