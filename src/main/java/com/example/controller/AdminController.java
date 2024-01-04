@@ -29,21 +29,30 @@ public class AdminController {
 
     @Operation(summary = "Get all clients")
     @PostMapping("/clients")
-    public ResponseEntity<Page<ClientDto>> getAllClients(Pageable pageable) {
+    @CheckSecurity(role = {"Admin"})
+    public ResponseEntity<Page<ClientDto>> getAllClients(@RequestHeader("Authorization") String authorization, Pageable pageable) {
         return new ResponseEntity<>(adminService.findAllClients(pageable), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all managers")
+    @PostMapping("/managers")
+    @CheckSecurity(role = {"Admin"})
+    public ResponseEntity<Page<ManagerDto>> getAllManagers(@RequestHeader("Authorization") String authorization, Pageable pageable) {
+        return new ResponseEntity<>(adminService.findAllManageres(pageable), HttpStatus.OK);
     }
 
 
     @Operation(summary = "Change client permission")
     @PutMapping("/clientpermission")
-    public ResponseEntity<ClientDto> updateClientPermission(@RequestBody UpdatePermissionDto updatePermissionDto) {
+    @CheckSecurity(role = {"Admin"})
+    public ResponseEntity<ClientDto> updateClientPermission(@RequestHeader("Authorization") String authorization, @RequestBody UpdatePermissionDto updatePermissionDto) {
         return new ResponseEntity<>(adminService.updatePermissionClient(updatePermissionDto), HttpStatus.OK);
     }
 
     @Operation(summary = "Change manager permission")
     @PutMapping("/managerpermission")
-//    @CheckSecurity(role = {"Admin"})
-    public ResponseEntity<ManagerDto> updateManagerPermission(@RequestBody UpdatePermissionDto updatePermissionDto) {
+    @CheckSecurity(role = {"Admin"})
+    public ResponseEntity<ManagerDto> updateManagerPermission(@RequestHeader("Authorization") String authorization, @RequestBody UpdatePermissionDto updatePermissionDto) {
         return new ResponseEntity<>(adminService.updatePermissionManager(updatePermissionDto), HttpStatus.OK);
     }
 }
