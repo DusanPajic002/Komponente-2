@@ -69,10 +69,8 @@ public class ManagerServiceImpl implements ManagerService {
 
 
         HallDto hallDto = new HallDto(manager.getHallName(), manager.getId());
-        System.out.println(hallDto);
         ResponseEntity<Integer> responseEntity = resevationServiceRestTemplate.exchange("/hall/setHallManager",
                 HttpMethod.PUT, new HttpEntity<>(hallDto), Integer.class);
-        System.out.println(responseEntity);
         if(responseEntity.getBody() == 0)
             throw new NoSuchElementException("Hall not found");
 

@@ -30,8 +30,7 @@ public class ManagerController {
 
     @Operation(summary = "Register user")
     @PostMapping
-    @CheckSecurity(role = {"Manager"})
-    public ResponseEntity<ManagerDto> saveUser(@RequestHeader("Authorization") String authorization, @RequestBody @Valid ManagerCreateDto managerCreateDto) {
+    public ResponseEntity<ManagerDto> saveUser( @RequestBody @Valid ManagerCreateDto managerCreateDto) {
         return new ResponseEntity<>(managerService.add(managerCreateDto), HttpStatus.CREATED);
     }
 
